@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class LibrosRepository implements I_Repository<LibrosEntity> {
@@ -35,6 +36,18 @@ public class LibrosRepository implements I_Repository<LibrosEntity> {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException("Error al insertar el libro.");
+        }
+    }
+
+    public void actualizarUnidades (int id_libro, int unidades) throws SQLException{
+        String sql = "UPDATE libros SET unidades_disponibles = ? WHERE id = ?;";
+        try(Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        preparedStatement.setInt(1,unidades);
+        preparedStatement.setInt(2,id_libro);
+        preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            throw new SQLException("Error al actualizar las unidades disponibles. " + e.getMessage());
         }
     }
 
@@ -75,7 +88,7 @@ public class LibrosRepository implements I_Repository<LibrosEntity> {
     }
 
     @Override
-    public Optional<LibrosEntity> findById(Integer id) throws SQLException {
+    public Optional<LibrosEntity> findById(Integer id) throws SQLException, NoSuchElementException {
         String sql = "SELECT * FROM libros WHERE id=?;";
         try(Connection connection = DatabaseConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
@@ -94,6 +107,8 @@ public class LibrosRepository implements I_Repository<LibrosEntity> {
             }
         }catch (SQLException e){
             throw new SQLException("Error al buscar el libro ingresado.");
+        }catch (NoSuchElementException e){
+            throw new NoSuchElementException("No se encontro el id ingresado. " + e.getMessage());
         }
     }
 

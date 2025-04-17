@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class UsuariosRepository implements I_Repository<UsuariosEntity> {
@@ -71,7 +72,7 @@ public class UsuariosRepository implements I_Repository<UsuariosEntity> {
     }
 
     @Override
-    public Optional<UsuariosEntity> findById(Integer id) throws SQLException {
+    public Optional<UsuariosEntity> findById(Integer id) throws SQLException, NoSuchElementException {
         String sql = "SELECT * FROM usuarios WHERE id=?;";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -86,6 +87,8 @@ public class UsuariosRepository implements I_Repository<UsuariosEntity> {
             }
         } catch (SQLException e) {
             throw new SQLException("Error al buscar el libro ingresado.");
+        }catch (NoSuchElementException e){
+            throw new NoSuchElementException("No se encontro el id ingresado. " + e.getMessage());
         }
     }
 }

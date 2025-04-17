@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class PrestamosRepository implements I_Repository<PrestamosEntity> {
@@ -96,7 +97,7 @@ public class PrestamosRepository implements I_Repository<PrestamosEntity> {
     }
 
     @Override
-    public Optional<PrestamosEntity> findById(Integer id) throws SQLException {
+    public Optional<PrestamosEntity> findById(Integer id) throws SQLException, NoSuchElementException {
         String sql = "SELECT * FROM prestamos WHERE id=?;";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -108,6 +109,8 @@ public class PrestamosRepository implements I_Repository<PrestamosEntity> {
             }
         } catch (SQLException e) {
             throw new SQLException("Error al buscar el libro ingresado."+ e.getMessage());
+        } catch (NoSuchElementException e){
+            throw new NoSuchElementException("No se encontro el id ingresado. " + e.getMessage());
         }
     }
 

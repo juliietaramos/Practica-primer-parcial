@@ -30,10 +30,10 @@ public class Main {
 //        listarUsuariosPrestamosActivos().forEach(System.out::println);
 
 //        RF04 - El sistema deberá permitirle al Bibliotecario generar un préstamo nuevo.
-//        darAltaPrestamo();
+//       darAltaPrestamo();
 
 //        RF05 - El sistema deberá permitirle al Bibliotecario marcar un préstamo como devuelto.
-//        devolverPrestamo();
+ //       devolverPrestamo();
 
 //        RF06 - El sistema deberá permitirle al Bibliotecario visualizar todos los préstamos.
 //        listarPrestamos().forEach(System.out::println);
@@ -42,18 +42,21 @@ public class Main {
 //        listarPrestamosActivos().forEach(System.out::println);
 
 //        RF08 - El sistema deberá permitirle al Bibliotecario visualizar el libro más prestado.
-        System.out.println(libroMasPrestado());
+//        System.out.println(libroMasPrestado());
 
 //        RF09 - El sistema deberá permitirle al Bibliotecario visualizar el total de libros disponibles.
+//        visualizarLibrosDisponibles();
 
 //        RF10 - El sistema deberá permitirle al Bibliotecario visualizar todos los libros.
+//        visualizarLibros();
 
 //        RF11 - El sistema deberá permitirle al Bibliotecario visualizar el usuario con
 //        mayor número de préstamos históricos en el sistema.
+//        System.out.println(mostrarUserConMasPrestamos());
 
 //        RF12 - El sistema deberá permitirle al Bibliotecario visualizar el promedio de
 //        préstamos por usuario, pero solo teniendo en cuenta a los usuarios que tienen por lo menos un préstamo.
-
+//        promedioPrestamos();
     }
 
     private static UsuariosEntity crearUsuario() {
@@ -128,10 +131,7 @@ public class Main {
     }
 
     private static LibrosEntity libroMasPrestado() {
-        Map<Integer, Long> prestamosPorLibro = listarPrestamos()
-                .stream()
-                .collect(Collectors.groupingBy(PrestamosEntity::getId_libro, Collectors.counting()));
-
+        Map<Integer, Long> prestamosPorLibro = prestamosService.prestamosPorLibro();
         // Encontrar el libro con el máximo número de préstamos
         Optional<Map.Entry<Integer, Long>> libroMasPrestado = prestamosPorLibro
                 .entrySet()
@@ -139,5 +139,22 @@ public class Main {
                 .max(Map.Entry.comparingByValue());
 
         return librosService.mostrarLibros(libroMasPrestado.get().getKey());
+    }
+
+    private static void visualizarLibrosDisponibles (){
+        librosService.listarLibrosDisponibles().forEach(System.out::println);
+    }
+
+    private static void visualizarLibros(){
+        librosService.listarLibros().forEach(System.out::println);
+    }
+
+    private static UsuariosEntity mostrarUserConMasPrestamos(){
+        return usuariosService.mostrarUsuario(prestamosService.obtenerIdUserMasPrestamos());
+    }
+
+    private static void promedioPrestamos(){
+        double promedio = prestamosService.obtenerPromedioPrestamosPorUsuario();
+        System.out.println("El promedio de prestamos por usuario es de " + promedio);
     }
 }

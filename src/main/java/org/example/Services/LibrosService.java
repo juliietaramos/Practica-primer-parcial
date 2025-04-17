@@ -22,6 +22,14 @@ public class LibrosService {
         listaDeLibros=new ArrayList<>();
     }
 
+    public  List<LibrosEntity>listarLibrosDisponibles(){
+        actualizarLista();
+        return listaDeLibros
+                .stream()
+                .filter(l -> l.getUnidades_disponibles()>0)
+                .toList();
+    }
+
     public static LibrosService getInstanceOf() {
         if (instance == null) {
             instance = new LibrosService();
